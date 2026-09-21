@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebGIS خط لوله گاز مشهد</title>
+    <title>مسیر پیشنهادی کرانه شمالی</title>
+    
     <script src="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.js"></script>
     <link href="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
@@ -12,6 +13,7 @@
 <body>
     <div id="map"></div>
     
+    <!-- پنل لایه‌ها -->
     <div id="layerPanel" class="glass-panel">
         <div class="panel-header">
             <h3>🗂️ لایه‌ها</h3>
@@ -21,26 +23,27 @@
             <label class="layer-item">
                 <input type="checkbox" id="lyr-masir" checked>
                 <span class="dot color-masir"></span>
-                مسیر پیشنهادی (خطی)
+                مسیر ۶۵ متری پیشنهادی
             </label>
             <label class="layer-item">
                 <input type="checkbox" id="lyr-harim-20" checked>
                 <span class="dot color-harim20"></span>
-                حریم ۲۰ متری گاز
+                حریم ۲۰ متری
             </label>
             <label class="layer-item">
-                <input type="checkbox" id="lyr-harim-poly" checked>
-                <span class="dot color-harimpoly"></span>
-                حریم گاز (پلی‌لاین)
+                <input type="checkbox" id="lyr-harim-200" checked>
+                <span class="dot color-harim200"></span>
+                حریم ۲۰۰ متری
             </label>
             <label class="layer-item">
-                <input type="checkbox" id="lyr-harim-polygon" checked>
-                <span class="dot color-harimpolygon"></span>
-                حریم گاز (پلی‌گان)
+                <input type="checkbox" id="lyr-harim-7" checked>
+                <span class="dot color-harim7"></span>
+                حریم ۷ متری
             </label>
         </div>
     </div>
 
+    <!-- پنل ابزارها -->
     <div id="toolbar" class="glass-panel">
         <div class="panel-header">
             <h2>📍 ابزارها</h2>
@@ -61,6 +64,7 @@
         </div>
     </div>
 
+    <!-- پاپ‌آپ -->
     <div id="customPopup" class="custom-popup"></div>
 
     <script src="js/map.js"></script>

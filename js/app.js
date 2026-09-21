@@ -6,46 +6,61 @@ function initApp() {
     }
 }
 
-function initLayers() {
-    console.log('در حال بارگذاری لایه‌های جدید...');
+async function initLayers() {
+    console.log('در حال بارگذاری لایه‌ها...');
     
-    // بارگذاری همزمان همه لایه‌ها
-    Promise.all([
-        loadMasirPishnehadi(),
-        loadHarim20(),
-        loadHarimPolyline(),
-        loadHarimPolygon()
-    ]).then(() => {
+    try {
+        // بارگذاری لایه‌ها با ترتیب درست (از پایین به بالا)
+        await loadHarim200();
+        await loadHarim7();
+        await loadHarim20();
+        await loadMasirPishnahadi();
+        
         console.log('✅ همه لایه‌ها با موفقیت بارگذاری شدند');
         
-        // ✅ تنظیم نمای اولیه نقشه روی محدوده داده‌ها (مرکز مشهد/محدوده پروژه)
+        // ✅ تنظیم نمای اولیه روی نقطه شروع (شرق)
         map.jumpTo({
-            center: [59.5, 36.4], // مرکز تقریبی مختصات داده‌های شما
-            zoom: 11
+            center: [59.767, 36.306],
+            zoom: 13,
+            pitch: 45,
+            bearing: -15
         });
         
         setupEventListeners();
         checkMobileAndMinimize();
-    }).catch(err => {
-        console.error('❌ خطا در بارگذاری لایه‌ها:', err);
-        alert('خطا در خواندن فایل‌های GeoJSON. لطفاً نام فایل‌ها و پوشه data را بررسی کنید.');
-    });
+    } catch (error) {
+        console.error(' خطا در بارگذاری لایه‌ها:', error);
+        alert('خطا در بارگذاری لایه‌ها. لطفاً فایل‌های GeoJSON را بررسی کنید.');
+    }
 }
 
 function setupEventListeners() {
-    // اتصال چک‌باکس‌ها به لایه‌های جدید
-    document.getElementById('lyr-masir').addEventListener('change', (e) => toggleLayer('masir', e.target.checked));
-    document.getElementById('lyr-harim-20').addEventListener('change', (e) => toggleLayer('harim20', e.target.checked));
-    document.getElementById('lyr-harim-poly').addEventListener('change', (e) => toggleLayer('harimpoly', e.target.checked));
-    document.getElementById('lyr-harim-polygon').addEventListener('change', (e) => toggleLayer('harimpolygon', e.target.checked));
+    // چک‌باکس لایه‌ها
+    document.getElementById('lyr-masir').addEventListener('change', (e) => {
+        toggleLayer('masir', e.target.checked);
+    });
     
-    // دکمه بازنشانی نما
+    document.getElementById('lyr-harim-20').addEventListener('change', (e) => {
+        toggleLayer('harim20', e.target.checked);
+    });
+    
+    document.getElementById('lyr-harim-200').addEventListener('change', (e) => {
+        toggleLayer('harim200', e.target.checked);
+    });
+    
+    document.getElementById('lyr-harim-7').addEventListener('change', (e) => {
+        toggleLayer('harim7', e.target.checked);
+    });
+    
+    // دکمه بازنشانی
     document.getElementById('btnReset').addEventListener('click', () => {
-        map.flyTo({ center: [59.5, 36.4], zoom: 11, duration: 2000 });
+        window.flyToStart();
     });
     
     // دکمه انیمیشن
-    document.getElementById('btnAnimate').addEventListener('click', () => window.startAnimation());
+    document.getElementById('btnAnimate').addEventListener('click', () => {
+        window.startAnimation();
+    });
     
     // دکمه‌های سرعت
     document.querySelectorAll('.speed-btn').forEach(btn => {
@@ -57,10 +72,11 @@ function setupEventListeners() {
         });
     });
     
-    // دکمه‌های جمع‌کردن پنل‌ها
+    // toggle پنل‌ها
     document.getElementById('toggleLayerPanel').addEventListener('click', () => {
         document.getElementById('layerPanel').classList.toggle('minimized');
     });
+    
     document.getElementById('toggleToolbar').addEventListener('click', () => {
         document.getElementById('toolbar').classList.toggle('minimized');
     });

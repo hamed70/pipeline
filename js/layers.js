@@ -4,128 +4,200 @@ let animationState = {
     speed: 1,
     intervalId: null
 };
-function loadMarz() {
-    return fetch('data/marz.geojson')
-        .then(res => res.json())
-        .then(geojson => {
-            map.addSource('marz', {
-                type: 'geojson',
-                data: geojson
-            });
-            
+
+let layerVisibility = {
+    masir: true,
+    harim20: true,
+    harim200: true,
+    harim7: true
+};
+
+// . مسیر ۶۵ متری پیشنهادی (سبز)
+async function loadMasirPishnahadi() {
+    try {
+        const response = await fetch('data/masir_pishnehadi_polyliens.geojson');
+        const geojson = await response.json();
+        
+        const sourceId = 'masir-pishnehadi';
+        const layerId = 'masir-pishnehadi-line';
+        
+        if (map.getSource(sourceId)) {
+            map.getSource(sourceId).setData(geojson);
+        } else {
+            map.addSource(sourceId, { type: 'geojson', data: geojson });
+        }
+        
+        if (!map.getLayer(layerId)) {
             map.addLayer({
-                id: 'marz-fill',
-                type: 'fill',
-                source: 'marz',
-                paint: {
-                    'fill-color': '#ef4444',
-                    'fill-opacity': 0.08
-                }
-            });
-            
-            map.addLayer({
-                id: 'marz-line',
+                id: layerId,
                 type: 'line',
-                source: 'marz',
-                paint: {
-                    'line-color': '#ef4444',
-                    'line-width': 2
+                source: sourceId,
+                paint: { 
+                    'line-color': '#10b981',
+                    'line-width': 6,
+                    'line-opacity': 0.95
                 }
             });
-            
-            layers.marz = { fill: 'marz-fill', line: 'marz-line' };
-            console.log('✅ لایه مرز اضافه شد');
-        });
-}
-
-// ۱. مسیر پیشنهادی (هدف انیمیشن)
-async function loadMasirPishnehadi() {
-    const response = await fetch('data/masir_pishnehadi_polyliens.geojson');
-    const geojson = await response.json();
-    
-    map.addSource('masir-pishnehadi', { type: 'geojson', data: geojson });
-    map.addLayer({
-        id: 'masir-pishnehadi-line',
-        type: 'line',
-        source: 'masir-pishnehadi',
-        paint: { 'line-color': '#10b981', 'line-width': 5, 'line-opacity': 0.9 }
-    });
-    
-    // کلیک برای پاپ‌آپ
-    map.on('click', 'masir-pishnehadi-line', (e) => showPopup(e.lngLat, e.features[0].properties, 'مسیر پیشنهادی'));
-    map.on('mouseenter', 'masir-pishnehadi-line', () => map.getCanvas().style.cursor = 'pointer');
-    map.on('mouseleave', 'masir-pishnehadi-line', () => map.getCanvas().style.cursor = '');
-    
-    layers.masir = 'masir-pishnehadi-line';
-}
-
-// ۲. حریم ۲۰ متری
-async function loadHarim20() {
-    const response = await fetch('data/harim_20m.geojson');
-    const geojson = await response.json();
-    
-    map.addSource('harim-20', { type: 'geojson', data: geojson });
-    map.addLayer({
-        id: 'harim-20-line',
-        type: 'line',
-        source: 'harim-20',
-        paint: { 'line-color': '#f59e0b', 'line-width': 3, 'line-opacity': 0.8 }
-    });
-    layers.harim20 = 'harim-20-line';
-}
-
-// ۳. حریم گاز (پلی‌لاین)
-async function loadHarimPolyline() {
-    const response = await fetch('data/harim_polyline.geojson');
-    const geojson = await response.json();
-    
-    map.addSource('harim-poly', { type: 'geojson', data: geojson });
-    map.addLayer({
-        id: 'harim-poly-line',
-        type: 'line',
-        source: 'harim-poly',
-        paint: { 'line-color': '#3b82f6', 'line-width': 4, 'line-opacity': 0.9 }
-    });
-    layers.harimpoly = 'harim-poly-line';
-}
-
-// ۴. حریم گاز (پلی‌گان)
-async function loadHarimPolygon() {
-    const response = await fetch('data/harim_polygon.geojson');
-    const geojson = await response.json();
-    
-    map.addSource('harim-polygon', { type: 'geojson', data: geojson });
-    
-    // اول Fill (پرکردن شفاف)
-    map.addLayer({
-        id: 'harim-polygon-fill',
-        type: 'fill',
-        source: 'harim-polygon',
-        paint: { 'fill-color': '#ef4444', 'fill-opacity': 0.15 }
-    });
-    // بعد Outline (خط دور)
-    map.addLayer({
-        id: 'harim-polygon-outline',
-        type: 'line',
-        source: 'harim-polygon',
-        paint: { 'line-color': '#ef4444', 'line-width': 2 }
-    });
-    
-    layers.harimpolygon = ['harim-polygon-fill', 'harim-polygon-outline'];
-}
-
-// تابع روشن/خاموش کردن
-function toggleLayer(layerName, isVisible) {
-    const visibility = isVisible ? 'visible' : 'none';
-    if (layerName === 'harimpolygon') {
-        map.setLayoutProperty(layers.harimpolygon[0], 'visibility', visibility);
-        map.setLayoutProperty(layers.harimpolygon[1], 'visibility', visibility);
-    } else {
-        map.setLayoutProperty(layers[layerName], 'visibility', visibility);
+        }
+        
+        map.setLayoutProperty(layerId, 'visibility', 
+            layerVisibility.masir ? 'visible' : 'none');
+        
+        layers.masir = layerId;
+        console.log('✅ لایه مسیر پیشنهادی بارگذاری شد');
+    } catch (error) {
+        console.error('❌ خطا در بارگذاری مسیر پیشنهادی:', error);
     }
 }
 
-// ✅ تابع استخراج نقاط برای انیمیشن از لایه مسیر پیشنهادی
+// ۲. حریم ۲۰ متری (نارنجی)
+async function loadHarim20() {
+    try {
+        const response = await fetch('data/harim_20m.geojson');
+        const geojson = await response.json();
+        
+        const sourceId = 'harim-20';
+        const layerId = 'harim-20-line';
+        
+        if (map.getSource(sourceId)) {
+            map.getSource(sourceId).setData(geojson);
+        } else {
+            map.addSource(sourceId, { type: 'geojson', data: geojson });
+        }
+        
+        if (!map.getLayer(layerId)) {
+            map.addLayer({
+                id: layerId,
+                type: 'line',
+                source: sourceId,
+                paint: { 
+                    'line-color': '#f59e0b',
+                    'line-width': 4,
+                    'line-opacity': 0.9
+                }
+            });
+        }
+        
+        map.setLayoutProperty(layerId, 'visibility', 
+            layerVisibility.harim20 ? 'visible' : 'none');
+        
+        layers.harim20 = layerId;
+        console.log('✅ لایه حریم ۲۰ متری بارگذاری شد');
+    } catch (error) {
+        console.error('❌ خطا در بارگذاری حریم ۰ متری:', error);
+    }
+}
+
+// ۳. حریم ۲۰۰ متری (آبی)
+async function loadHarim200() {
+    try {
+        const response = await fetch('data/harim_polyline.geojson');
+        const geojson = await response.json();
+        
+        const sourceId = 'harim-200';
+        const layerId = 'harim-200-line';
+        
+        if (map.getSource(sourceId)) {
+            map.getSource(sourceId).setData(geojson);
+        } else {
+            map.addSource(sourceId, { type: 'geojson', data: geojson });
+        }
+        
+        if (!map.getLayer(layerId)) {
+            map.addLayer({
+                id: layerId,
+                type: 'line',
+                source: sourceId,
+                paint: { 
+                    'line-color': '#3b82f6',
+                    'line-width': 5,
+                    'line-opacity': 0.85
+                }
+            });
+        }
+        
+        map.setLayoutProperty(layerId, 'visibility', 
+            layerVisibility.harim200 ? 'visible' : 'none');
+        
+        layers.harim200 = layerId;
+        console.log('✅ لایه حریم ۲۰۰ متری بارگذاری شد');
+    } catch (error) {
+        console.error('❌ خطا در بارگذاری حریم ۲۰۰ متری:', error);
+    }
+}
+
+// ۴. حریم ۷ متری (قرمز - پلی‌گان)
+async function loadHarim7() {
+    try {
+        const response = await fetch('data/harim_polygon.geojson');
+        const geojson = await response.json();
+        
+        const sourceId = 'harim-7';
+        const fillLayerId = 'harim-7-fill';
+        const outlineLayerId = 'harim-7-outline';
+        
+        if (map.getSource(sourceId)) {
+            map.getSource(sourceId).setData(geojson);
+        } else {
+            map.addSource(sourceId, { type: 'geojson', data: geojson });
+        }
+        
+        if (!map.getLayer(fillLayerId)) {
+            map.addLayer({
+                id: fillLayerId,
+                type: 'fill',
+                source: sourceId,
+                paint: { 
+                    'fill-color': '#ef4444',
+                    'fill-opacity': 0.3
+                }
+            });
+        }
+        
+        if (!map.getLayer(outlineLayerId)) {
+            map.addLayer({
+                id: outlineLayerId,
+                type: 'line',
+                source: sourceId,
+                paint: { 
+                    'line-color': '#dc2626',
+                    'line-width': 3,
+                    'line-opacity': 0.9
+                }
+            });
+        }
+        
+        const visibility = layerVisibility.harim7 ? 'visible' : 'none';
+        map.setLayoutProperty(fillLayerId, 'visibility', visibility);
+        map.setLayoutProperty(outlineLayerId, 'visibility', visibility);
+        
+        layers.harim7 = [fillLayerId, outlineLayerId];
+        console.log('✅ لایه حریم ۷ متری بارگذاری شد');
+    } catch (error) {
+        console.error('❌ خطا در بارگذاری حریم ۷ متری:', error);
+    }
+}
+
+// تابع روشن/خاموش کردن لایه
+function toggleLayer(layerName, isVisible) {
+    layerVisibility[layerName] = isVisible;
+    const visibility = isVisible ? 'visible' : 'none';
+    
+    if (layerName === 'harim7') {
+        if (map.getLayer('harim-7-fill')) {
+            map.setLayoutProperty('harim-7-fill', 'visibility', visibility);
+        }
+        if (map.getLayer('harim-7-outline')) {
+            map.setLayoutProperty('harim-7-outline', 'visibility', visibility);
+        }
+    } else if (layers[layerName]) {
+        if (map.getLayer(layers[layerName])) {
+            map.setLayoutProperty(layers[layerName], 'visibility', visibility);
+        }
+    }
+}
+
+// ✅ تابع استخراج نقاط برای انیمیشن (از شرق به غرب)
 function getOrderedRoutePoints() {
     const source = map.getSource('masir-pishnehadi');
     if (!source || !source._data) return [];
@@ -136,15 +208,18 @@ function getOrderedRoutePoints() {
     geojson.features.forEach(feature => {
         if (feature.geometry.type === 'LineString') {
             feature.geometry.coordinates.forEach(coord => {
-                allPoints.push(coord); // [longitude, latitude]
+                allPoints.push(coord);
             });
         }
     });
     
+    // ✅ مرتب‌سازی از شرق به غرب (longitude از بزرگتر به کوچکتر)
+    allPoints.sort((a, b) => b[0] - a[0]);
+    
     return allPoints;
 }
 
-// ✅ تابع شروع انیمیشن
+// تابع شروع انیمیشن
 window.startAnimation = function() {
     if (animationState.isAnimating) {
         stopAnimation();
@@ -153,16 +228,18 @@ window.startAnimation = function() {
     
     const points = getOrderedRoutePoints();
     if (points.length === 0) {
-        alert('نقاطی برای پرواز یافت نشد. لطفاً بررسی کنید لایه مسیر پیشنهادی لود شده باشد.');
+        alert('نقاطی برای پرواز یافت نشد.');
         return;
     }
     
     animationState.isAnimating = true;
-    document.getElementById('btnAnimate').textContent = '⏸️ توقف';
-    document.getElementById('btnAnimate').classList.replace('btn-primary', 'btn-warning');
+    
+    const btnAnimate = document.getElementById('btnAnimate');
+    btnAnimate.textContent = '⏸️ توقف';
+    btnAnimate.className = 'btn-warning';
     
     let currentIndex = 0;
-    const step = Math.max(1, Math.floor(points.length / 60)); // نرم‌تر کردن حرکت
+    const step = Math.max(1, Math.floor(points.length / 80));
     
     function animate() {
         if (!animationState.isAnimating) return;
@@ -176,13 +253,15 @@ window.startAnimation = function() {
         const point = points[currentIndex];
         map.flyTo({
             center: point,
-            zoom: 14, // زوم مناسب برای دیدن مسیر حین حرکت
-            duration: 1000 / animationState.speed,
+            zoom: 14,
+            pitch: 45,
+            bearing: -15,
+            duration: 800 / animationState.speed,
             essential: true
         });
         
         currentIndex += step;
-        animationState.intervalId = setTimeout(animate, 1200 / animationState.speed);
+        animationState.intervalId = setTimeout(animate, 1000 / animationState.speed);
     }
     
     animate();
@@ -190,11 +269,17 @@ window.startAnimation = function() {
 
 function stopAnimation() {
     animationState.isAnimating = false;
-    if (animationState.intervalId) clearTimeout(animationState.intervalId);
-    document.getElementById('btnAnimate').textContent = '🎬 پرواز روی مسیر';
-    document.getElementById('btnAnimate').classList.replace('btn-warning', 'btn-primary');
+    if (animationState.intervalId) {
+        clearTimeout(animationState.intervalId);
+    }
+    
+    const btnAnimate = document.getElementById('btnAnimate');
+    btnAnimate.textContent = '🎬 پرواز روی مسیر';
+    btnAnimate.className = 'btn-primary';
 }
 
 window.setAnimationSpeed = function(speed) {
     animationState.speed = speed;
 };
+
+window.toggleLayer = toggleLayer;

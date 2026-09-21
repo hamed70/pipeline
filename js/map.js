@@ -1,66 +1,71 @@
-// ============================================
-// MapLibre GL JS - راه‌اندازی نقشه
-// ============================================
 
-// ✅ بدون نیاز به توکن!
-// در js/map.js، style را تغییر بده:
+const satelliteStyle = {
+    version: 8,
+    sources: {
+        'esri-satellite': {
+            type: 'raster',
+            tiles: [
+                'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+            ],
+            tileSize: 256,
+            attribution: '© Esri'
+        }
+    },
+    layers: [
+        {
+            id: 'esri-satellite',
+            type: 'raster',
+            source: 'esri-satellite',
+            paint: { 'raster-opacity': 1.0 }
+        }
+    ]
+};
 
+// ✅ نقطه شروع پرواز (شرق‌ترین نقطه مسیر)
+const startPoint = {
+    longitude: 59.767,
+    latitude: 36.306,
+    zoom: 13
+};
+
+// ایجاد نقشه - ✅ مرکز روی نقطه شروع (شرق)
 const map = new maplibregl.Map({
     container: 'map',
-    // ✅ نقشه ماهواره‌ای Esri
-    style: {
-        version: 8,
-        sources: {
-            'esri-satellite': {
-                type: 'raster',
-                tiles: [
-                    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-                ],
-                tileSize: 256,
-                attribution: '© Esri'
-            }
-        },
-        layers: [
-            {
-                id: 'esri-satellite',
-                type: 'raster',
-                source: 'esri-satellite',
-                paint: {
-                    'raster-opacity': 1.0
-                }
-            }
-        ]
-    },
-    center: [59.5734, 36.2976],
-    zoom: 10
+    style: satelliteStyle,
+    center: [startPoint.longitude, startPoint.latitude],
+    zoom: startPoint.zoom,
+    pitch: 45,
+    bearing: -15,
+    maxZoom: 19
 });
 
-// کنترل‌های نقشه
-map.addControl(new maplibregl.NavigationControl(), 'bottom-right');
+// کنترل‌ها
+map.addControl(new maplibregl.NavigationControl({
+    visualizePitch: true,
+    showCompass: true,
+    showZoom: true
+}), 'bottom-right');
+
 map.addControl(new maplibregl.ScaleControl({
     maxWidth: 150,
     unit: 'metric'
 }), 'bottom-left');
 
-// ذخیره به صورت global
 window.map = map;
 
-// رویداد لود نقشه
-map.on('load', () => {
-    console.log('✅ نقشه MapLibre بارگذاری شد');
-    
-    // فعال‌سازی توابع بعد از لود
-    if (window.onMapLoad) {
-        window.onMapLoad();
-    }
-});
-
-// تابع برای پرش به مرکز مشهد
-window.flyToMashhad = function() {
+// ✅ پرش به نقطه شروع (شرق)
+window.flyToStart = function() {
     map.flyTo({
-        center: [59.5734, 36.2976],
-        zoom: 10,
-        pitch: 0,
+        center: [startPoint.longitude, startPoint.latitude],
+        zoom: startPoint.zoom,
+        pitch: 45,
+        bearing: -15,
         duration: 2000
     });
 };
+
+// رویداد لود نقشه
+map.on('load', () => {
+    console.log('✅ نقشه ماهواره‌ای بارگذاری شد');
+    if (window.onMapLoad) window.onMapLoad();
+});
