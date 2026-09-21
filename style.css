@@ -12,7 +12,7 @@ body, html {
     background-color: #0a0e1a;
 }
 
-#cesiumContainer {
+#map {
     width: 100%;
     height: 100%;
 }
@@ -130,17 +130,18 @@ body, html {
 }
 
 .dot {
-    width: 9px;
-    height: 9px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     display: inline-block;
-    margin-left: 8px;
+    margin-left: 10px;
     box-shadow: 0 0 6px currentColor;
 }
 
-.color-pishnahad { background-color: #f59e0b; color: #f59e0b; }
-.color-mojood { background-color: #06b6d4; color: #06b6d4; }
-.color-marz { background-color: #ef4444; color: #ef4444; }
+.color-masir { background-color: #10b981; color: #10b981; } /* سبز زمردی */
+.color-harim20 { background-color: #f59e0b; color: #f59e0b; } /* نارنجی */
+.color-harimpoly { background-color: #3b82f6; color: #3b82f6; } /* آبی */
+.color-harimpolygon { background-color: #ef4444; color: #ef4444; } /* قرمز */
 
 /* ============================================
    🔧 پنل ابزارها
@@ -288,18 +289,7 @@ button {
     font-weight: 600;
 }
 
-/* ============================================
-   🗑️ حذف المان‌های Cesium
-   ============================================ */
 
-.cesium-viewer-bottom, 
-.cesium-viewer-animationContainer, 
-.cesium-viewer-timelineContainer {
-    display: none !important;
-}
-.cesium-widget-credits {
-    display: none !important;
-}
 
 /* ============================================
    📱 ریسپانسیو موبایل

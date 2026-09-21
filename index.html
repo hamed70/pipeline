@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> خط لوله گاز مشهد</title>
-    <script src="https://cesium.com/downloads/cesiumjs/releases/1.114/Build/Cesium/Cesium.js"></script>
-    <link href="https://cesium.com/downloads/cesiumjs/releases/1.114/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <title>WebGIS خط لوله گاز مشهد</title>
+    <script src="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="cesiumContainer"></div>
+    <div id="map"></div>
     
-    <!-- پنل لایه‌ها -->
     <div id="layerPanel" class="glass-panel">
         <div class="panel-header">
             <h3>🗂️ لایه‌ها</h3>
@@ -20,55 +19,53 @@
         </div>
         <div class="panel-content">
             <label class="layer-item">
-                <input type="checkbox" id="lyr-pishnahad" checked>
-                <span class="dot color-pishnahad"></span>
-                شبکه پیشنهادی
+                <input type="checkbox" id="lyr-masir" checked>
+                <span class="dot color-masir"></span>
+                مسیر پیشنهادی (خطی)
             </label>
             <label class="layer-item">
-                <input type="checkbox" id="lyr-mojood" checked>
-                <span class="dot color-mojood"></span>
-                شبکه موجود
+                <input type="checkbox" id="lyr-harim-20" checked>
+                <span class="dot color-harim20"></span>
+                حریم ۲۰ متری گاز
             </label>
             <label class="layer-item">
-                <input type="checkbox" id="lyr-marz" checked>
-                <span class="dot color-marz"></span>
-                مرز مشهد
+                <input type="checkbox" id="lyr-harim-poly" checked>
+                <span class="dot color-harimpoly"></span>
+                حریم گاز (پلی‌لاین)
+            </label>
+            <label class="layer-item">
+                <input type="checkbox" id="lyr-harim-polygon" checked>
+                <span class="dot color-harimpolygon"></span>
+                حریم گاز (پلی‌گان)
             </label>
         </div>
     </div>
 
-    <!-- پنل ابزارها -->
     <div id="toolbar" class="glass-panel">
         <div class="panel-header">
             <h2>📍 ابزارها</h2>
             <button class="toggle-btn" id="toggleToolbar">−</button>
         </div>
         <div class="panel-content">
-            <button id="btnReset" class="btn-primary">🔄 بازنشانی</button>
-            <button id="btnFlight" class="btn-primary">🎬 پرواز</button>
-
-            <div id="flightControls">
+            <button id="btnReset" class="btn-primary">🔄 بازنشانی نما</button>
+            <button id="btnAnimate" class="btn-primary">🎬 پرواز روی مسیر</button>
+            
+            <div id="speedControls">
                 <label>⚡ سرعت:</label>
                 <div class="speed-buttons">
                     <button class="speed-btn" data-speed="0.5">0.5x</button>
                     <button class="speed-btn active" data-speed="1">1x</button>
                     <button class="speed-btn" data-speed="2">2x</button>
-                    <button class="speed-btn" data-speed="4">4x</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- پاپ‌آپ -->
-    <div id="customPopup" class="custom-popup">
-        <div class="popup-header" id="popupTitle">عوارض</div>
-        <div class="popup-body" id="popupBody"></div>
-    </div>
+    <div id="customPopup" class="custom-popup"></div>
 
-    <script src="js/viewer.js"></script>
+    <script src="js/map.js"></script>
     <script src="js/layers.js"></script>
     <script src="js/popup.js"></script>
-    <script src="js/flight.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

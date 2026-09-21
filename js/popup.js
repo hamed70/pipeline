@@ -1,48 +1,50 @@
-const popup = document.getElementById('customPopup');
-const popupTitle = document.getElementById('popupTitle');
-const popupBody = document.getElementById('popupBody');
+// ============================================
+// مدیریت Popup
+// ============================================
 
-// دیکشنری ترجمه فیلدها به فارسی
+const popupElement = document.getElementById('customPopup');
 const fieldTranslations = {
     'LAYER': 'نام لایه',
     'capacity': 'ظرفیت (اینچ)',
     'Distance': 'فاصله',
-    'Shape_Length': 'طول شکل',
-    'OBJECTID': 'شناسه عارضه',
-    'Name': 'نام',
-    'AreaHectar': 'مساحت (هکتار)'
+    'Shape_Length': 'طول',
+    'OBJECTID': 'شناسه',
+    'Name': 'نام'
 };
 
-// ✅ استفاده از window.viewer برای اطمینان از دسترسی global
-window.viewer.screenSpaceEventHandler.setInputAction(function (movement) {
-    const pickedObject = window.viewer.scene.pick(movement.position);
-
-    if (Cesium.defined(pickedObject) && pickedObject.id) {
-        const entity = pickedObject.id;
-        const props = entity.properties;
-
-        if (!props) return;
-
-        popupTitle.textContent = props.LAYER ? props.LAYER.getValue() : (props.Name ? props.Name.getValue() : 'جزئیات عارضه');
-        
-        let html = '';
-        for (let key in props) {
-            if (props.hasOwnProperty(key) && key !== 'name') {
-                const rawValue = props[key].getValue();
-                const value = typeof rawValue === 'number' ? rawValue.toLocaleString('fa-IR', {maximumFractionDigits: 2}) : rawValue;
-                const label = fieldTranslations[key] || key;
-                
-                html += `<div><span>${label}:</span> <strong>${value}</strong></div>`;
-            }
+window.showPopup = function(lngLat, properties, title) {
+    let html = `<div class="popup-header">${title}</div><div class="popup-body">`;
+    
+    for (let key in properties) {
+        if (properties.hasOwnProperty(key)) {
+            const value = properties[key];
+            const label = fieldTranslations[key] || key;
+            const formattedValue = typeof value === 'number' 
+                ? value.toLocaleString('fa-IR', {maximumFractionDigits: 2}) 
+                : value;
+            
+            html += `<div><span>${label}:</span> <strong>${formattedValue}</strong></div>`;
         }
-
-        popupBody.innerHTML = html;
-        popup.style.display = 'block';
-
-        popup.style.left = (movement.position.x + 15) + 'px';
-        popup.style.top = (movement.position.y + 15) + 'px';
-
-    } else {
-        popup.style.display = 'none';
     }
-}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+    
+    html += '</div>';
+    popupElement.innerHTML = html;
+    popupElement.style.display = 'block';
+    
+    // محاسبه موقعیت popup
+    const coords = map.project(lngLat);
+    popupElement.style.left = `${coords.x + 15}px`;
+    popupElement.style.top = `${coords.y - 50}px`;
+};
+
+// بستن popup با کلیک خارج
+map.on('click', (e) => {
+    if (!e.originalEvent.target.closest('.custom-popup')) {
+        popupElement.style.display = 'none';
+    }
+});
+
+// بستن popup با تغییر zoom/pan
+map.on('move', () => {
+    popupElement.style.display = 'none';
+});
