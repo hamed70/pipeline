@@ -10,7 +10,10 @@ async function initLayers() {
     console.log('در حال بارگذاری لایه‌ها...');
     
     try {
-        // بارگذاری لایه‌ها با ترتیب درست (از پایین به بالا)
+        // اول لایه نامرئی پرواز
+        await loadInvisibleFlightPath();
+        
+        // بعد بقیه لایه‌ها
         await loadHarim200();
         await loadHarim7();
         await loadHarim20();
@@ -18,9 +21,10 @@ async function initLayers() {
         
         console.log('✅ همه لایه‌ها با موفقیت بارگذاری شدند');
         
-        // ✅ تنظیم نمای اولیه روی نقطه شروع (شرق)
+        // ✅ تنظیم نمای اولیه دقیقاً روی نقطه شروع (شرق مسیر)
+        // از همان متغیر startPoint که در map.js تعریف شده استفاده می‌کنیم
         map.jumpTo({
-            center: [59.767, 36.306],
+            center: [59.70553249057415, 36.315647991413179],
             zoom: 13,
             pitch: 45,
             bearing: -15
@@ -29,7 +33,7 @@ async function initLayers() {
         setupEventListeners();
         checkMobileAndMinimize();
     } catch (error) {
-        console.error(' خطا در بارگذاری لایه‌ها:', error);
+        console.error('❌ خطا در بارگذاری لایه‌ها:', error);
         alert('خطا در بارگذاری لایه‌ها. لطفاً فایل‌های GeoJSON را بررسی کنید.');
     }
 }
@@ -52,7 +56,7 @@ function setupEventListeners() {
         toggleLayer('harim7', e.target.checked);
     });
     
-    // دکمه بازنشانی
+    // دکمه بازنشانی - برمی‌گردد به نقطه شروع (شرق)
     document.getElementById('btnReset').addEventListener('click', () => {
         window.flyToStart();
     });

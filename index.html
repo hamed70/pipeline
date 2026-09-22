@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مسیر پیشنهادی کرانه شمالی</title>
+    <title>داشبورد مدیریتی پروژه کرانه شمالی</title>
     
     <script src="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.js"></script>
     <link href="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.css" rel="stylesheet">
@@ -12,6 +12,21 @@
 </head>
 <body>
     <div id="map"></div>
+    
+    <!-- ✅ عنوان داشبورد -->
+    <div id="dashboardHeader" class="dashboard-header">
+        <div class="header-content">
+            <div class="header-icon">️</div>
+            <div class="header-text">
+                <h1>داشبورد مدیریتی پروژه کرانه شمالی</h1>
+                
+            </div>
+            <div class="header-badge">
+                <span class="badge-dot"></span>
+                آنلاین
+            </div>
+        </div>
+    </div>
     
     <!-- پنل لایه‌ها -->
     <div id="layerPanel" class="glass-panel">
@@ -23,7 +38,7 @@
             <label class="layer-item">
                 <input type="checkbox" id="lyr-masir" checked>
                 <span class="dot color-masir"></span>
-                مسیر ۶۵ متری پیشنهادی
+                مسیر ۵ متری پیشنهادی
             </label>
             <label class="layer-item">
                 <input type="checkbox" id="lyr-harim-20" checked>

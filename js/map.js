@@ -1,4 +1,4 @@
-
+// استایل ماهواره‌ای
 const satelliteStyle = {
     version: 8,
     sources: {
@@ -21,14 +21,14 @@ const satelliteStyle = {
     ]
 };
 
-// ✅ نقطه شروع پرواز (شرق‌ترین نقطه مسیر)
+// ✅ نقطه شروع پرواز (شرق‌ترین نقطه مسیر - دقیقاً همان نقطه‌ای که پرواز از آنجا شروع می‌شود)
 const startPoint = {
-    longitude: 59.767,
-    latitude: 36.306,
+    longitude: 59.70553249057415,
+    latitude: 36.315647991413179,
     zoom: 13
 };
 
-// ایجاد نقشه - ✅ مرکز روی نقطه شروع (شرق)
+// ایجاد نقشه - ✅ مرکز دقیقاً روی نقطه شروع (شرق)
 const map = new maplibregl.Map({
     container: 'map',
     style: satelliteStyle,
@@ -53,7 +53,7 @@ map.addControl(new maplibregl.ScaleControl({
 
 window.map = map;
 
-// ✅ پرش به نقطه شروع (شرق)
+// ✅ پرش به نقطه شروع (همان نقطه شرقی)
 window.flyToStart = function() {
     map.flyTo({
         center: [startPoint.longitude, startPoint.latitude],
@@ -67,5 +67,6 @@ window.flyToStart = function() {
 // رویداد لود نقشه
 map.on('load', () => {
     console.log('✅ نقشه ماهواره‌ای بارگذاری شد');
+    console.log(`📍 مرکز نقشه: [${startPoint.longitude}, ${startPoint.latitude}]`);
     if (window.onMapLoad) window.onMapLoad();
 });

@@ -5,8 +5,9 @@
 }
 
 body {
-    font-family: 'Vazirmatn', sans-serif;
+    font-family: 'Vazirmatn', Tahoma, sans-serif;
     overflow: hidden;
+    background: #0a0e1a;
 }
 
 #map {
@@ -15,28 +16,145 @@ body {
 }
 
 /* ============================================
-   پنل‌های شیشه‌ای
+   🎯 عنوان داشبورد
+   ============================================ */
+
+.dashboard-header {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    padding: 12px 24px;
+    min-width: 400px;
+    animation: slideDown 0.6s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.header-icon {
+    font-size: 32px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.header-text {
+    flex: 1;
+}
+
+.header-text h1 {
+    color: #f1f5f9;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.header-subtitle {
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.header-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.badge-dot {
+    width: 8px;
+    height: 8px;
+    background: #22c55e;
+    border-radius: 50%;
+    animation: blink 1.5s ease-in-out infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+/* ============================================
+   🪟 پنل‌های شیشه‌ای (زیباتر)
    ============================================ */
 
 .glass-panel {
     position: absolute;
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(16px);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(24px) saturate(200%);
+    -webkit-backdrop-filter: blur(24px) saturate(200%);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
     z-index: 1000;
-    min-width: 220px;
-    transition: all 0.3s ease;
+    min-width: 240px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.glass-panel:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 
+        0 16px 48px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 #layerPanel {
-    top: 20px;
+    top: 100px;
     right: 20px;
 }
 
 #toolbar {
-    top: 20px;
+    top: 100px;
     left: 20px;
 }
 
@@ -44,36 +162,43 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 14px 18px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px 16px 0 0;
 }
 
 .panel-header h3,
 .panel-header h2 {
-    color: #e2e8f0;
+    color: #f1f5f9;
     font-size: 15px;
     font-weight: 700;
+    letter-spacing: 0.3px;
 }
 
 .toggle-btn {
     background: rgba(255, 255, 255, 0.1);
-    border: none;
-    color: #94a3b8;
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #cbd5e1;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .toggle-btn:hover {
     background: rgba(255, 255, 255, 0.2);
     color: white;
+    transform: rotate(180deg);
 }
 
 .panel-content {
-    padding: 14px 18px;
+    padding: 16px 20px;
 }
 
 .glass-panel.minimized .panel-content {
@@ -81,32 +206,46 @@ body {
 }
 
 /* ============================================
-   لایه‌ها
+   📊 لایه‌ها
    ============================================ */
 
 .layer-item {
     display: flex;
     align-items: center;
-    margin: 10px 0;
+    margin: 12px 0;
     color: #e2e8f0;
     font-size: 13px;
     cursor: pointer;
+    padding: 8px 10px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.layer-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateX(-4px);
 }
 
 .layer-item input[type="checkbox"] {
-    margin-left: 10px;
+    margin-left: 12px;
     cursor: pointer;
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
+    accent-color: #3b82f6;
 }
 
 .dot {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     display: inline-block;
-    margin-left: 10px;
-    box-shadow: 0 0 8px currentColor;
+    margin-left: 12px;
+    box-shadow: 0 0 12px currentColor;
+    transition: all 0.3s ease;
+}
+
+.layer-item:hover .dot {
+    transform: scale(1.2);
 }
 
 .color-masir { background-color: #10b981; color: #10b981; }
@@ -115,130 +254,185 @@ body {
 .color-harim7 { background-color: #ef4444; color: #ef4444; }
 
 /* ============================================
-   دکمه‌ها
+   🔘 دکمه‌ها (زیباتر)
    ============================================ */
 
 .btn-primary,
 .btn-warning {
     width: 100%;
-    padding: 12px;
+    padding: 14px;
     margin: 8px 0;
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     font-family: 'Vazirmatn', sans-serif;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.3px;
+}
+
+.btn-primary::before,
+.btn-warning::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-primary:hover::before,
+.btn-warning:hover::before {
+    left: 100%;
 }
 
 .btn-primary {
     background: linear-gradient(135deg, #3b82f6, #2563eb);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
 }
 
 .btn-warning {
     background: linear-gradient(135deg, #f59e0b, #d97706);
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
 }
 
 .btn-warning:hover {
-    background: linear-gradient(135deg, #d97706, #b45309);
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.5);
 }
 
 /* ============================================
-   کنترل‌های سرعت
+   ⚡ کنترل‌های سرعت
    ============================================ */
 
 #speedControls {
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 #speedControls label {
     display: block;
     font-size: 12px;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     color: #94a3b8;
+    font-weight: 500;
 }
 
 .speed-buttons {
     display: flex;
-    gap: 6px;
+    gap: 8px;
 }
 
 .speed-btn {
     flex: 1;
-    padding: 8px 4px;
+    padding: 10px 4px;
     font-size: 12px;
     font-weight: 600;
     background: rgba(71, 85, 105, 0.4);
     color: #cbd5e1;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     font-family: 'Vazirmatn', sans-serif;
 }
 
 .speed-btn:hover {
-    background: rgba(100, 116, 139, 0.5);
+    background: rgba(100, 116, 139, 0.6);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
 }
 
 .speed-btn.active {
     background: linear-gradient(135deg, #3b82f6, #2563eb);
     color: white;
-    border-color: rgba(59, 130, 246, 0.4);
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
 /* ============================================
-   پاپ‌آپ
+   💬 پاپ‌آپ (زیباتر)
    ============================================ */
 
 .custom-popup {
     position: absolute;
     display: none;
-    background: rgba(15, 23, 42, 0.9);
-    backdrop-filter: blur(20px);
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(24px) saturate(200%);
+    -webkit-backdrop-filter: blur(24px) saturate(200%);
     color: #e2e8f0;
-    border-radius: 12px;
-    border: 1px solid rgba(59, 130, 246, 0.3);
-    min-width: 240px;
-    max-width: 300px;
+    border-radius: 16px;
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    min-width: 260px;
+    max-width: 320px;
     z-index: 1000;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    box-shadow: 
+        0 16px 48px rgba(0, 0, 0, 0.6),
+        0 0 30px rgba(59, 130, 246, 0.2);
     pointer-events: none;
     overflow: hidden;
+    animation: popupFadeIn 0.3s ease-out;
+}
+
+@keyframes popupFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .popup-header {
     background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     color: white;
-    padding: 12px 16px;
+    padding: 14px 18px;
     font-weight: 700;
-    font-size: 13px;
+    font-size: 14px;
+    letter-spacing: 0.3px;
 }
 
 .popup-body {
-    padding: 14px 16px;
-    font-size: 12px;
-    line-height: 1.8;
+    padding: 16px 18px;
+    font-size: 13px;
+    line-height: 1.9;
 }
 
 .popup-body div {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    padding: 4px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 6px 0;
+    transition: background 0.2s ease;
+}
+
+.popup-body div:hover {
+    background: rgba(255, 255, 255, 0.05);
+    padding-right: 8px;
+    padding-left: 8px;
+    margin: 0 -8px;
+    border-radius: 6px;
 }
 
 .popup-body div:last-child {
@@ -255,15 +449,36 @@ body {
 }
 
 /* ============================================
-   ریسپانسیو
+    ریسپانسیو
    ============================================ */
 
 @media (max-width: 768px) {
+    .dashboard-header {
+        min-width: auto;
+        left: 10px;
+        right: 10px;
+        transform: none;
+        top: 10px;
+        padding: 10px 16px;
+    }
+    
+    .header-content {
+        flex-wrap: wrap;
+    }
+    
+    .header-text h1 {
+        font-size: 14px;
+    }
+    
+    .header-subtitle {
+        font-size: 11px;
+    }
+    
     #layerPanel,
     #toolbar {
-        top: 10px;
-        min-width: 180px;
-        max-width: 200px;
+        top: 90px;
+        min-width: 200px;
+        max-width: 220px;
     }
 
     #layerPanel {
@@ -276,11 +491,11 @@ body {
 
     .panel-header h3,
     .panel-header h2 {
-        font-size: 13px;
+        font-size: 14px;
     }
 
     .panel-content {
-        padding: 10px 14px;
+        padding: 12px 16px;
     }
 
     .layer-item {
@@ -289,12 +504,33 @@ body {
     }
 
     button {
-        font-size: 12px;
-        padding: 10px 12px;
+        font-size: 13px;
+        padding: 12px;
     }
 
     .speed-btn {
         font-size: 11px;
-        padding: 6px 2px;
+        padding: 8px 2px;
     }
+}
+
+/* ============================================
+   🖥️ اسکرول‌بار زیبا
+   ============================================ */
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.5);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.8);
 }
